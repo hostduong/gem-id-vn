@@ -37,7 +37,7 @@ export async function onRequestPost({ request, env }) {
   "admin_email": "admin@gem.id.vn",
   "admin_pass": "supersecurepassword",
   "admin_otp": "123456",
-  "email_user": "user1@example.com" // chỉ với 2 API cuối
+  "email_user": "user1@example.com"
 }
 }
 */
