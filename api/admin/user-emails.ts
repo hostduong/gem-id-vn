@@ -34,3 +34,19 @@ export async function onRequestPost({ request, env }) {
   }
   return Response.json({ success: true, emails });
 }
+
+
+// ─────────────────────────────────────────────
+// 📌 MẪU YÊU CẦU (chỉ dùng để tham khảo):
+// Gửi JSON qua POST body để cập nhật thông tin user
+/*
+{
+{
+  "admin_email": "admin@gem.id.vn",
+  "admin_pass": "supersecurepassword",
+  "admin_otp": "123456",
+  "email_user": "user1@example.com"
+}
+}
+*/
+// ─────────────────────────────────────────────
