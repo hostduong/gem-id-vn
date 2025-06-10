@@ -62,3 +62,21 @@ async function addLogger(KV_LOGGER, email_user, logObj) {
   if (oldLogs.length > 500) oldLogs.shift();
   await KV_LOGGER.put(key, JSON.stringify(oldLogs), { expirationTtl: 30 * 86400 });
 }
+
+
+// ────────────────────────────────────────────────
+// 👇 MẪU YÊU CẦU (chỉ dùng để tham khảo):
+// Gửi JSON qua POST body để cập nhật thông tin user
+/*
+{
+  "admin_email": "admin@gem.id.vn",
+  "admin_pass": "supersecurepassword",
+  "admin_otp": "123456",        // OTP 6 số từ app 2FA admin
+  "email_user": "user1@example.com",
+  "pass": "newPassword2025",
+  "base32": "MZXW6YTBOI======", // (tùy chọn) mã base32 mới cho user, nếu muốn reset 2FA
+  "status": "lock"              // (tùy chọn) "lock" để khóa, "live" để mở lại user
+}
+*/
+// ────────────────────────────────────────────────
+
