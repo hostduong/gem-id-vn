@@ -1,48 +1,51 @@
 import { authenticator } from "otplib";
 
-// Các ngưỡng rate-limit
-const MAX_FIRST = 10;
-const MAX_REPEAT = 5;
+// Ngưỡng giới hạn login sai
+const MAX_IP_FIRST = 10, MAX_IP_REPEAT = 5;
+const MAX_EMAIL_FIRST = 10, MAX_EMAIL_REPEAT = 5;
 const LOCK_TIME = 10 * 60 * 1000; // 10 phút
 
 export async function onRequestPost({ request, env }) {
   const KV = env.KV_USER as KVNamespace;
   const KV_LOGGER = env.KV_LOGGER as KVNamespace;
-  const KV_LIMIT = env.KV_LOGIN_LIMIT as KVNamespace; // KV Namespace riêng cho rate-limit
+  const KV_RATE_LIMIT = env.KV_RATE_LIMIT as KVNamespace; // Dùng 1 KV duy nhất
 
   const { email, pass, otp } = await request.json();
-  // Lấy IP client
-  const ip =
-    request.headers.get("cf-connecting-ip") ||
-    request.headers.get("x-forwarded-for") ||
-    "";
+  const ip = request.headers.get("cf-connecting-ip") || request.headers.get("x-forwarded-for") || "";
+  const now = Date.now();
+
+  // Giới hạn login cho IP và email
+  const limitIPKey = `limitIP:/api/login:${ip}`;
+  const limitEmailKey = `limitEmail:/api/login:${email}`;
+
+  // Check block IP
+  let stateIP = { count: 0, until: 0, mode: "first" };
+  let rawIP = await KV_RATE_LIMIT.get(limitIPKey);
+  if (rawIP) {
+    stateIP = JSON.parse(rawIP);
+    if (stateIP.until && now < stateIP.until) {
+      await logLogin(KV_LOGGER, email, false, ip, "IP bị khóa");
+      return Response.json({ error: `IP của bạn bị block, thử lại sau`, code: "IP_LOCK" }, { status: 429 });
+    }
+  }
+  // Check block email
+  let stateEmail = { count: 0, until: 0, mode: "first" };
+  let rawEmail = await KV_RATE_LIMIT.get(limitEmailKey);
+  if (rawEmail) {
+    stateEmail = JSON.parse(rawEmail);
+    if (stateEmail.until && now < stateEmail.until) {
+      await logLogin(KV_LOGGER, email, false, ip, "Email bị khóa");
+      return Response.json({ error: `Tài khoản bị khóa, thử lại sau`, code: "EMAIL_LOCK" }, { status: 429 });
+    }
+  }
 
   if (!email || !pass)
     return Response.json({ error: "Thiếu email hoặc pass" }, { status: 400 });
 
   const isAdmin = email === "admin@gem.id.vn";
-  const limitKey = `fail:${email}:${ip}`;
-  const now = Date.now();
-
-  // Lấy trạng thái rate-limit
-  let state: { count: number; until: number; mode: "first" | "repeat" } =
-    { count: 0, until: 0, mode: "first" };
-  const limitRaw = await KV_LIMIT.get(limitKey);
-  if (limitRaw) {
-    state = JSON.parse(limitRaw);
-    // Nếu vẫn đang trong thời gian khóa, trả lỗi và không cho login
-    if (state.until && now < state.until) {
-      await logLogin(KV_LOGGER, email, false, ip, "Rate limit");
-      return Response.json({
-        error: `Tạm khóa đăng nhập tới ${new Date(state.until).toLocaleTimeString()}`,
-      }, { status: 429 });
-    }
-  }
-
-  // Tìm user
   const userRaw = await KV.get(`user:${email}`);
   if (!userRaw) {
-    await handleFail(email, ip, KV_LIMIT, KV_LOGGER, limitKey, state, "Sai tài khoản hoặc mật khẩu");
+    await handleFail(stateIP, stateEmail, ip, email, KV_RATE_LIMIT, KV_LOGGER, "Sai tài khoản hoặc mật khẩu");
     return Response.json({ error: "Tài khoản hoặc mật khẩu không đúng" }, { status: 401 });
   }
   const user = JSON.parse(userRaw);
@@ -53,28 +56,29 @@ export async function onRequestPost({ request, env }) {
   }
 
   if (user.pass !== pass) {
-    await handleFail(email, ip, KV_LIMIT, KV_LOGGER, limitKey, state, "Sai tài khoản hoặc mật khẩu");
+    await handleFail(stateIP, stateEmail, ip, email, KV_RATE_LIMIT, KV_LOGGER, "Sai tài khoản hoặc mật khẩu");
     return Response.json({ error: "Tài khoản hoặc mật khẩu không đúng" }, { status: 401 });
   }
 
-  // Nếu là admin, bắt buộc 2FA
+  // Admin phải có 2FA
   if (isAdmin) {
     if (!otp) {
-      await handleFail(email, ip, KV_LIMIT, KV_LOGGER, limitKey, state, "Thiếu mã OTP admin");
+      await handleFail(stateIP, stateEmail, ip, email, KV_RATE_LIMIT, KV_LOGGER, "Thiếu mã OTP admin");
       return Response.json({ error: "Thiếu mã OTP cho admin" }, { status: 400 });
     }
     if (!user.base32) {
-      await handleFail(email, ip, KV_LIMIT, KV_LOGGER, limitKey, state, "Admin chưa có 2FA");
+      await handleFail(stateIP, stateEmail, ip, email, KV_RATE_LIMIT, KV_LOGGER, "Admin chưa có 2FA");
       return Response.json({ error: "Admin chưa có 2FA" }, { status: 403 });
     }
     if (!authenticator.check(otp, user.base32)) {
-      await handleFail(email, ip, KV_LIMIT, KV_LOGGER, limitKey, state, "Sai mã OTP admin");
+      await handleFail(stateIP, stateEmail, ip, email, KV_RATE_LIMIT, KV_LOGGER, "Sai mã OTP admin");
       return Response.json({ error: "Mã OTP không đúng" }, { status: 401 });
     }
   }
 
-  // Đăng nhập thành công: reset rate-limit, lưu IP
-  await KV_LIMIT.delete(limitKey);
+  // Đăng nhập thành công: reset rate-limit login cho cả IP và email
+  await KV_RATE_LIMIT.delete(limitIPKey);
+  await KV_RATE_LIMIT.delete(limitEmailKey);
   user.ip = ip;
   await KV.put(`user:${email}`, JSON.stringify(user));
 
@@ -95,20 +99,33 @@ export async function onRequestPost({ request, env }) {
   return Response.json({ success: true, profile });
 }
 
-// Xử lý login sai: tăng đếm, rate-limit đúng logic yêu cầu
-async function handleFail(email, ip, KV_LIMIT, KV_LOGGER, limitKey, state, errorMsg) {
+// Xử lý login sai: tăng đếm cho cả IP và Email
+async function handleFail(stateIP, stateEmail, ip, email, KV_RATE_LIMIT, KV_LOGGER, errorMsg) {
   const now = Date.now();
-  state.count = (state.count || 0) + 1;
-  let max = state.mode === "repeat" ? MAX_REPEAT : MAX_FIRST;
-  if (state.count >= max) {
-    state.until = now + LOCK_TIME;
-    state.count = 0;
-    state.mode = "repeat";
-    await KV_LIMIT.put(limitKey, JSON.stringify(state), { expirationTtl: 3600 });
+  // Cập nhật IP
+  let maxIP = stateIP.mode === "repeat" ? MAX_IP_REPEAT : MAX_IP_FIRST;
+  stateIP.count = (stateIP.count || 0) + 1;
+  if (stateIP.count >= maxIP) {
+    stateIP.until = now + LOCK_TIME;
+    stateIP.count = 0;
+    stateIP.mode = "repeat";
   } else {
-    state.until = 0;
-    await KV_LIMIT.put(limitKey, JSON.stringify(state), { expirationTtl: 3600 });
+    stateIP.until = 0;
   }
+  await KV_RATE_LIMIT.put(`limitIP:/api/login:${ip}`, JSON.stringify(stateIP), { expirationTtl: 3600 });
+
+  // Cập nhật Email
+  let maxEmail = stateEmail.mode === "repeat" ? MAX_EMAIL_REPEAT : MAX_EMAIL_FIRST;
+  stateEmail.count = (stateEmail.count || 0) + 1;
+  if (stateEmail.count >= maxEmail) {
+    stateEmail.until = now + LOCK_TIME;
+    stateEmail.count = 0;
+    stateEmail.mode = "repeat";
+  } else {
+    stateEmail.until = 0;
+  }
+  await KV_RATE_LIMIT.put(`limitEmail:/api/login:${email}`, JSON.stringify(stateEmail), { expirationTtl: 3600 });
+
   await logLogin(KV_LOGGER, email, false, ip, errorMsg);
 }
 
