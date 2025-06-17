@@ -1,4 +1,4 @@
-// ✅ admin/create-api-key.ts
+// ✅ admin/create-api-key.ts - Tạo mới api_key, lưu salt + sha
 import { randomBase62, sha256 } from "../utils/hash";
 export async function onRequestPost(context) {
   const { username } = await context.request.json();
