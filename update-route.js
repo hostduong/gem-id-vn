@@ -1,13 +1,13 @@
 const fs = require("fs");
 const { execSync } = require("child_process");
 
-function randomBase62(length = 24) {
-  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+function randomBase62(length = 30) {
+  const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
   return Array.from({ length }, () => chars[Math.floor(Math.random() * chars.length)]).join('');
 }
 
 (async () => {
-  const newRoute = randomBase62(24);
+  const newRoute = randomBase62(30);
   const routeUrl = `https://gem.id.vn/api/${newRoute}`;
   console.log("✅ Route mới:", routeUrl);
 
