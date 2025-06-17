@@ -1,7 +1,6 @@
 # ✅ wrangler.toml
 
 name = "gem-id-vn"
-type = "javascript"
 account_id = "bbef1813ec9b7d5f8fa24e49120f64ee"
 workers_dev = false
 compatibility_date = "2024-06-01"
