@@ -1,8 +1,3 @@
-Dưới đây là nội dung mẫu cho `README.md` phù hợp với toàn bộ hệ thống KHOAI bạn đã xây dựng:
-
----
-
-```markdown
 # 🥔 KHOAI Workers – Email Automation & User Auth via Cloudflare Workers
 
 ## 🔧 Giới thiệu
@@ -61,16 +56,6 @@ KHOAI là hệ thống được xây dựng trên **Cloudflare Workers**, sử d
 
 ---
 
-## 🧠 Tính năng nổi bật
-
-- ✅ Route API động `/api/<Base62>` auto-update mỗi phiên
-- ✅ Bảo vệ bằng cookie 7 ngày, gia hạn tự động, IP check, 2FA
-- ✅ Email automation theo người dùng (token, recovery, ghi log)
-- ✅ Quản trị phân quyền: user & admin
-- ✅ Lưu toàn bộ giao dịch coin & hoạt động hệ thống
-
----
-
 ## ⚙️ Cài đặt & Deploy
 
 ### 1. Clone project và cấu hình `wrangler.toml`
@@ -79,27 +64,15 @@ git clone https://github.com/your-org/khoai-workers.git
 cd khoai-workers
 ```
 
-Cập nhật:
-- `account_id`
-- `kv_namespaces`
-- `routes` (route tạm ban đầu)
-
----
-
 ### 2. Cập nhật route mới và push
 
 ```bash
 node update-route.js
-# Tự động sửa wrangler.toml + push GitHub
 ```
-
----
 
 ### 3. Deploy bằng GitHub Actions
 
-File `.github/workflows/deploy.yml` sẽ:
-- Auto deploy mỗi khi `wrangler.toml` thay đổi
-- Dùng `CLOUDFLARE_API_TOKEN` từ GitHub Secrets
+Tự động triển khai mỗi khi bạn push thay đổi lên `main`.
 
 ---
 
@@ -128,22 +101,7 @@ Response:
 
 ## 🛡️ Bảo mật
 
-- Mỗi user có 1 `api_key` (sha256 + salt)
-- Cookie hash + TTL tự gia hạn 7 ngày
-- Tự động ghi log IP, hành vi
-- Quản lý bằng Cloudflare KV, không cần database
-
----
-
-## 📄 License
-
-MIT – Code by [your team].
-```
-
----
-
-📌 Mình có thể:
-- Đưa `README.md` vào root repo
-- Gói toàn bộ project `.zip` kèm file này
-
-Chỉ cần nói **"Tạo repo zip kèm README"** là mình đóng gói ngay.
+- API key hash + salt
+- Cookie TTL gia hạn 7 ngày
+- Ghi log IP, browser, hành vi
+- Tách biệt user & admin
