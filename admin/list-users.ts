@@ -1,4 +1,4 @@
-// ✅ admin/user-emails.ts
+// ✅ admin/user-emails.ts - Lấy danh sách toàn bộ user
 export async function onRequestGet(context) {
   const url = new URL(context.request.url);
   const username = url.searchParams.get("username") || "";
