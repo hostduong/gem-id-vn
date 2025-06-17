@@ -9,9 +9,6 @@ routes = [
   "https://gem.id.vn/api/abc123xyz456"
 ]
 
-[vars]
-ENVIRONMENT = "production"
-
 kv_namespaces = [
   { binding = "KHOAI_KV_USER",     id = "77a8867cc9374bbaa9846d78875efbf0" },
   { binding = "KHOAI_KV_COOKIE",   id = "9e0fee27605645ae9b60157f6e75e4e7" },
@@ -21,3 +18,6 @@ kv_namespaces = [
   { binding = "KHOAI_KV_OUTLOOK",  id = "60ad76d205ff435c8101bd3e31428a01" },
   { binding = "KHOAI_KV_GMAIL",    id = "08b95e1748744c80b9f797d3c0d4fe4b" }
 ]
+
+[vars]
+ENVIRONMENT = "production"
