@@ -1,0 +1,21 @@
+// ✅ wrangler.toml
+
+name = "khoai-workers"
+type = "javascript"
+account_id = "<your_account_id>"
+workers_dev = false
+compatibility_date = "2024-06-01"
+
+routes = [
+  "https://tenmien.com/api/abc123xyz456"  # sẽ được thay đổi tự động
+]
+
+[vars]
+ENVIRONMENT = "production"
+
+kv_namespaces = [
+  { binding = "KHOAI_KV_USER", id = "<kv_user_id>" },
+  { binding = "KHOAI_KV_COOKIE", id = "<kv_cookie_id>" },
+  { binding = "KHOAI_KV_API_KEY", id = "<kv_apikey_id>" },
+  { binding = "KHOAI_KV_ROUTE", id = "<kv_route_id>" }
+]  
