@@ -4,6 +4,10 @@ workers_dev = false
 main = "src/api/index.ts"
 compatibility_date = "2024-06-01"
 
+routes = [
+  "https://gem.id.vn/api/abc123xyz456"
+]
+
 [vars]
 ENVIRONMENT = "production"
 
@@ -14,5 +18,5 @@ kv_namespaces = [
   { binding = "KHOAI_KV_ROUTE", id = "8923fac56d1b42528f76d13ba473fe68" },
   { binding = "KHOAI_KV_LOGGER", id = "056e31b4339648ecae8ccc88e4cbfa6a" },
   { binding = "KHOAI_KV_OUTLOOK", id = "60ad76d205ff435c8101bd3e31428a01" },
-  { binding = "KHOAI_KV_GMAIL", id = "08b95e1748744c80b9f797d3c0d4fe4b" }  
+  { binding = "KHOAI_KV_GMAIL", id = "08b95e1748744c80b9f797d3c0d4fe4b" }
 ]
