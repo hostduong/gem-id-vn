@@ -1,14 +1,8 @@
-# ✅ wrangler.toml
-
 name = "gem-id-vn"
 account_id = "bbef1813ec9b7d5f8fa24e49120f64ee"
 workers_dev = false
-compatibility_date = "2024-06-01"
 main = "src/api/index.ts"
-
-routes = [
-  "https://tenmien.com/api/abc123xyz456"  # sẽ được thay đổi tự động
-]
+compatibility_date = "2024-06-01"
 
 [vars]
 ENVIRONMENT = "production"
@@ -21,4 +15,4 @@ kv_namespaces = [
   { binding = "KHOAI_KV_LOGGER", id = "056e31b4339648ecae8ccc88e4cbfa6a" },
   { binding = "KHOAI_KV_OUTLOOK", id = "60ad76d205ff435c8101bd3e31428a01" },
   { binding = "KHOAI_KV_GMAIL", id = "08b95e1748744c80b9f797d3c0d4fe4b" }  
-]  
+]
