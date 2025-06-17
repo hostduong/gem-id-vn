@@ -8,10 +8,11 @@ const { execSync } = require("child_process");
   const routeUrl = `https://gem.id.vn/api/${newRoute}`;
   console.log("✅ Đã cập nhật route:", newRoute);
 
-  // ✅ Ghi vào KV route_latest
+  // ✅ Ghi vào KV
   const wranglerSecret = process.env.CLOUDFLARE_API_TOKEN;
   const wranglerAccount = "bbef1813ec9b7d5f8fa24e49120f64ee";
   const kvId = "8923fac56d1b42528f76d13ba473fe68";
+
   await fetch(`https://api.cloudflare.com/client/v4/accounts/${wranglerAccount}/storage/kv/namespaces/${kvId}/values/route_latest`, {
     method: "PUT",
     headers: {
@@ -21,12 +22,12 @@ const { execSync } = require("child_process");
     body: newRoute
   });
 
-  // ✅ Cập nhật wrangler.toml
+  // ✅ Ghi lại wrangler.toml
   let toml = fs.readFileSync("wrangler.toml", "utf8");
   toml = toml.replace(/routes\s*=\s*\[[^\]]*\]/, `routes = ["${routeUrl}"]`);
   fs.writeFileSync("wrangler.toml", toml);
 
-  // ✅ Git commit nếu thay đổi
+  // ✅ Git commit
   try {
     execSync(`git config --global user.name "Cloudflare Bot"`);
     execSync(`git config --global user.email "bot@gem.id.vn"`);
@@ -35,7 +36,7 @@ const { execSync } = require("child_process");
     execSync(`git commit -m "🔁 Update route to /api/${newRoute}"`);
     execSync("git push");
   } catch (err) {
-    console.warn("⚠️ Không thể git commit (có thể không có gì thay đổi)");
+    console.warn("⚠️ Không thể git commit (có thể không có thay đổi)");
   }
 
   // ✅ Deploy
