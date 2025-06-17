@@ -1,4 +1,3 @@
-// ✅ update-route.js - Sinh route mới và cập nhật KV + deploy
 const fs = require("fs");
 const { execSync } = require("child_process");
 
@@ -8,7 +7,6 @@ const { execSync } = require("child_process");
   const routeUrl = `https://gem.id.vn/api/${newRoute}`;
   console.log("✅ Đã cập nhật route:", newRoute);
 
-  // ✅ Ghi vào KV
   const wranglerSecret = process.env.CLOUDFLARE_API_TOKEN;
   const wranglerAccount = "bbef1813ec9b7d5f8fa24e49120f64ee";
   const kvId = "8923fac56d1b42528f76d13ba473fe68";
@@ -22,16 +20,13 @@ const { execSync } = require("child_process");
     body: newRoute
   });
 
-  // ✅ Ghi lại wrangler.toml
   let toml = fs.readFileSync("wrangler.toml", "utf8");
   toml = toml.replace(/routes\s*=\s*\[[^\]]*\]/, `routes = ["${routeUrl}"]`);
   fs.writeFileSync("wrangler.toml", toml);
 
-  // ✅ Git commit
   try {
-    execSync(`git config --global user.name "Cloudflare Bot"`);
+    execSync(`git config --global user.name "AutoBot"`);
     execSync(`git config --global user.email "bot@gem.id.vn"`);
-
     execSync("git add wrangler.toml");
     execSync(`git commit -m "🔁 Update route to /api/${newRoute}"`);
     execSync("git push");
@@ -39,6 +34,5 @@ const { execSync } = require("child_process");
     console.warn("⚠️ Không thể git commit (có thể không có thay đổi)");
   }
 
-  // ✅ Deploy
   execSync(`npx wrangler deploy`, { stdio: "inherit" });
 })();
