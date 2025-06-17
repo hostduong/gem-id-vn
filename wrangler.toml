@@ -14,8 +14,11 @@ routes = [
 ENVIRONMENT = "production"
 
 kv_namespaces = [
-  { binding = "KHOAI_KV_USER", id = "<kv_user_id>" },
-  { binding = "KHOAI_KV_COOKIE", id = "<kv_cookie_id>" },
-  { binding = "KHOAI_KV_API_KEY", id = "<kv_apikey_id>" },
-  { binding = "KHOAI_KV_ROUTE", id = "<kv_route_id>" }
+  { binding = "KHOAI_KV_USER", id = "77a8867cc9374bbaa9846d78875efbf0" },
+  { binding = "KHOAI_KV_COOKIE", id = "9e0fee27605645ae9b60157f6e75e4e7" },
+  { binding = "KHOAI_KV_API_KEY", id = "be4985203f4445b1b9b9b92fcae18a16" },
+  { binding = "KHOAI_KV_ROUTE", id = "8923fac56d1b42528f76d13ba473fe68" },
+  { binding = "KHOAI_KV_LOGGER", id = "056e31b4339648ecae8ccc88e4cbfa6a" },
+  { binding = "KHOAI_KV_OUTLOOK", id = "60ad76d205ff435c8101bd3e31428a01" },
+  { binding = "KHOAI_KV_GMAIL", id = "08b95e1748744c80b9f797d3c0d4fe4b" }  
 ]  
