@@ -1,4 +1,4 @@
-// ✅ update-route.js
+// ✅ update-route.js - Sinh route /api/<Base62> mới
 
 const fs = require("fs");
 const { execSync } = require("child_process");
