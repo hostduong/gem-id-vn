@@ -1,4 +1,4 @@
-// ✅ admin/lock-user.ts
+// ✅ admin/lock-user.ts - Khoá hoặc mở tài khoản
 export async function onRequestPost(context) {
   const { username = "", lock = true } = await context.request.json();
   const userKey = `KHOAI/\/profile/\/user:${username}`;
