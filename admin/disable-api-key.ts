@@ -1,4 +1,4 @@
-// ✅ admin/disable-api-key.ts
+// ✅ admin/disable-api-key.ts - Vô hiệu hoá API key
 export async function onRequestPost(context) {
   const { api_key } = await context.request.json();
   const salt = await context.env.KHOAI_KV_API_KEY.get(`KHOAI/\/api_key/\/token:${api_key}`, "json");
