@@ -1,15 +1,14 @@
-// ✅ update-route.js - Sinh route /api/<Base62> mới
+// ✅ update-route.js
 const fs = require("fs");
 const { execSync } = require("child_process");
 
 (async () => {
   const crypto = await import("crypto");
   const newRoute = crypto.randomBytes(16).toString("base64url").slice(0, 24); // Base62
-
   const routeUrl = `https://gem.id.vn/api/${newRoute}`;
   console.log("✅ Đã cập nhật route:", newRoute);
 
-  // ✅ Cập nhật KV
+  // ✅ Ghi route vào KV
   const wranglerSecret = process.env.CLOUDFLARE_API_TOKEN;
   const wranglerAccount = "bbef1813ec9b7d5f8fa24e49120f64ee";
   const kvId = "8923fac56d1b42528f76d13ba473fe68";
@@ -22,7 +21,20 @@ const { execSync } = require("child_process");
     body: newRoute
   });
 
-  // ✅ Deploy thủ công với route mới
-  execSync(`npx wrangler deploy --route=${routeUrl}`, { stdio: "inherit" });
-})();
+  // ✅ Ghi vào wrangler.toml
+  let toml = fs.readFileSync("wrangler.toml", "utf-8");
+  toml = toml.replace(/\/api\/[a-zA-Z0-9]+/g, `/api/${newRoute}`);
+  fs.writeFileSync("wrangler.toml", toml);
 
+  // ✅ (Tuỳ chọn) Commit + Push nếu dùng trong GitHub Action
+  try {
+    execSync("git add wrangler.toml");
+    execSync(`git commit -m "🔁 Update route to /api/${newRoute}"`);
+    execSync("git push");
+  } catch (e) {
+    console.warn("⚠️ Không thể git commit (có thể không thay đổi gì)");
+  }
+
+  // ✅ Deploy (dùng cấu hình wrangler.toml)
+  execSync("npx wrangler deploy", { stdio: "inherit" });
+})();
