@@ -1,4 +1,4 @@
-// ✅ admin/update-user.ts
+// ✅ admin/update-user.ts - Cập nhật pass, 2FA, trạng thái
 export async function onRequestPost(context) {
   const { username, updates = {} } = await context.request.json();
   const key = `KHOAI/\/profile/\/user:${username}`;
