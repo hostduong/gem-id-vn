@@ -56,7 +56,14 @@ function writeToKV(routeKey, value) {
   console.log("✅ Đã cập nhật route:", newRoute);
 
   // ✅ Commit & Push GitHub
-  execSync("git add wrangler.toml");
+execSync("git add wrangler.toml");
+
+try {
   execSync(`git commit -m "🔁 Update route to /api/${newRoute}"`);
   execSync("git push");
+  console.log("✅ Đã commit và push thành công.");
+} catch (e) {
+  console.log("⚠️ Không có gì để commit. Bỏ qua git push.");
+}
+
 })();
