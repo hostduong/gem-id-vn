@@ -1,19 +1,31 @@
-# ✅ .github/workflows/deploy.yml - GitHub Actions deploy
-
 name: Deploy Cloudflare Worker
 
 on:
+  schedule:
+    - cron: '*/20 * * * *'   # ⏱ Tự động chạy mỗi 20 phút
+  workflow_dispatch:         # 👈 Cho phép chạy thủ công từ GitHub UI
   push:
-    branches: [ "main" ]
+    branches: [ "main" ]     # ✅ Tự deploy khi bạn push
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Update dynamic route
+        run: node update-route.js
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+
       - name: Install Wrangler
         run: npm install -g wrangler
-      - name: Deploy Worker
+
+      - name: Deploy to Cloudflare
         run: npx wrangler deploy
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
