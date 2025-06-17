@@ -11,7 +11,7 @@ function randomBase62(length = 24) {
   const routeUrl = `https://gem.id.vn/api/${newRoute}`;
   console.log("✅ Route mới:", routeUrl);
 
-  // ✅ Ghi KV bằng API fetch (wrangler@4.x không dùng kv:key put được)
+  // ✅ Ghi KV bằng fetch
   const wranglerSecret = process.env.CLOUDFLARE_API_TOKEN;
   const wranglerAccount = "bbef1813ec9b7d5f8fa24e49120f64ee";
   const kvId = "8923fac56d1b42528f76d13ba473fe68";
@@ -30,12 +30,13 @@ function randomBase62(length = 24) {
     process.exit(1);
   }
 
-  // ✅ Sửa wrangler.toml để tiện debug
+  // ✅ Ghi lại wrangler.toml
   let toml = fs.readFileSync("wrangler.toml", "utf8");
-  toml = toml.replace(/routes\s*=\s*\[[^\]]*\]/, `routes = ["${routeUrl}"]`);
+  const routeBlock = `routes = [ "${routeUrl}" ]`;
+  toml = toml.replace(/routes\s*=\s*\[[\s\S]*?\]/, routeBlock);
   fs.writeFileSync("wrangler.toml", toml);
 
-  // ✅ Git commit
+  // ✅ Commit Git nếu có thay đổi
   try {
     execSync(`git config --global user.name "AutoBot"`);
     execSync(`git config --global user.email "bot@gem.id.vn"`);
@@ -46,6 +47,6 @@ function randomBase62(length = 24) {
     console.warn("⚠️ Không thể git commit:", err.message);
   }
 
-  // ✅ Deploy
+  // ✅ Deploy theo wrangler.toml
   execSync(`npx wrangler deploy --config=wrangler.toml`, { stdio: "inherit" });
 })();
