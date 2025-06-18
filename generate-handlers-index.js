@@ -1,34 +1,32 @@
-// ✅ generate-handlers-index.js – Auto-generate src/handlers/index.ts
-
 const fs = require("fs");
 const path = require("path");
 
-// 📁 Các thư mục có thể chứa file handler
 const srcPath = path.join(__dirname, "src");
-const folders = fs.readdirSync(srcPath).filter(name => {
-  const fullPath = path.join(srcPath, name);
-  return fs.statSync(fullPath).isDirectory() && name !== "api" && name !== "handlers";
-});
+const handlerPath = path.join(srcPath, "handlers");
 
-const handlersDir = path.join(__dirname, "src", "handlers");
-
-// 🔧 Đảm bảo thư mục tồn tại
-fs.mkdirSync(handlersDir, { recursive: true });
+// ✅ Tạo thư mục handlers nếu chưa có
+fs.mkdirSync(handlerPath, { recursive: true });
 
 let output = `// ✅ Auto-generated handlers/index.ts\n`;
 
-for (const folder of folders) {
-  const dir = path.join(__dirname, "src", folder);
-  if (!fs.existsSync(dir)) continue;
+// ✅ Tự động lấy tất cả thư mục trong src/, bỏ qua api và handlers
+const folders = fs.readdirSync(srcPath).filter(name => {
+  const fullPath = path.join(srcPath, name);
+  return fs.statSync(fullPath).isDirectory() && !["api", "handlers"].includes(name);
+});
 
-  const files = fs.readdirSync(dir).filter(f => f.endsWith(".ts"));
+for (const folder of folders) {
+  const folderDir = path.join(srcPath, folder);
+  const files = fs.readdirSync(folderDir).filter(f => f.endsWith(".ts"));
+
   for (const file of files) {
     const name = file.replace(".ts", "");
     output += `export { default as "${name}" } from "../${folder}/${file}";\n`;
   }
 }
 
-// 📄 Ghi vào handlers/index.ts (ghi đè luôn nếu có)
-const indexFilePath = path.join(handlersDir, "index.ts");
-fs.writeFileSync(indexFilePath, output, "utf8");
-console.log("✅ Đã tạo hoặc ghi đè src/handlers/index.ts");
+// ✅ Ghi file index.ts
+const filePath = path.join(handlerPath, "index.ts");
+fs.writeFileSync(filePath, output, { encoding: "utf8", flag: "w" });
+
+console.log("✅ handlers/index.ts đã được tạo hoặc cập nhật.");
