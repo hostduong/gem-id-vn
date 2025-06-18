@@ -2,10 +2,10 @@ name: Deploy Cloudflare Worker
 
 on:
   schedule:
-    - cron: '*/20 * * * *'     # Mỗi 20 phút
-  workflow_dispatch:           # Chạy thủ công
+    - cron: '*/20 * * * *'
+  workflow_dispatch:
   push:
-    branches: [ "main" ]       # Tự deploy khi push
+    branches: [ "main" ]
 
 jobs:
   deploy:
@@ -26,10 +26,14 @@ jobs:
       - name: Generate handlers/index.ts
         run: node generate-handlers-index.js
 
+      - name: Debug check file
+        run: |
+          echo "📁 Danh sách handlers:"
+          ls -l src/handlers
+          echo "📄 Nội dung index.ts:"
+          cat src/handlers/index.ts || echo "⚠️ Không tìm thấy index.ts"
+
       - name: Update & deploy route
         run: node update-route.js
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-
-      - name: Debug check output
-        run: ls -l src/handlers && cat src/handlers/index.ts || echo "❌ index.ts không tồn tại"
