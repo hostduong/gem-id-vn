@@ -37,3 +37,12 @@ jobs:
         run: node update-route.js
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+
+      - name: Commit updated handlers/index.ts
+        run: |
+          git config --global user.name "AutoBot"
+          git config --global user.email "bot@gem.id.vn"
+          git add src/handlers/index.ts
+          git commit -m "🔁 Auto-update handlers/index.ts" || echo "⚠️ No changes to commit"
+          git push
+    
