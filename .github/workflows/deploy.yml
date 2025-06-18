@@ -18,7 +18,10 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 20
+          node-version: 20 
+          
+      - name: Ensure src folders exist
+        run: mkdir -p src/{auth,email,admin,coin,handlers}
 
       - name: Generate handlers/index.ts
         run: node generate-handlers-index.js
