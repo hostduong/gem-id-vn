@@ -8,3 +8,4 @@ export { default as "update-email" } from "../email/update-email.ts";
 export { default as "update-token" } from "../email/update-token.ts";
 export { default as "add" } from "../coin/add.ts";
 export { default as "deduct" } from "../coin/deduct.ts";
+export { default as "history" } from "../coin/history.ts";
