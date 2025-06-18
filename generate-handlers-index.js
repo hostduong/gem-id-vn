@@ -1,27 +1,25 @@
 const fs = require("fs");
 const path = require("path");
 
-const MODULES = ["auth", "email", "admin", "coin"];
-const HANDLER_PATH = path.join("src", "handlers", "index.ts");
+const folders = ["auth", "email", "admin", "coin"];
+const baseDir = path.join(__dirname, "src");
+const handlerDir = path.join(baseDir, "handlers");
 
-// Tạo thư mục nếu chưa có
-const handlersDir = path.dirname(HANDLER_PATH);
-if (!fs.existsSync(handlersDir)) fs.mkdirSync(handlersDir, { recursive: true });
+// Đảm bảo thư mục tồn tại
+fs.mkdirSync(handlerDir, { recursive: true });
 
-// Bắt đầu ghi nội dung
-let output = `// ✅ Auto-generated. Do not edit manually.\n`;
+let output = `// ✅ Auto-generated file. Do not edit manually.\n`;
 
-for (const module of MODULES) {
-  const folder = path.join("src", module);
-  if (!fs.existsSync(folder)) continue;
+folders.forEach(folder => {
+  const folderPath = path.join(baseDir, folder);
+  if (!fs.existsSync(folderPath)) return;
 
-  const files = fs.readdirSync(folder).filter(f => f.endsWith(".ts"));
-
+  const files = fs.readdirSync(folderPath).filter(f => f.endsWith(".ts"));
   for (const file of files) {
-    const name = file.replace(/\.ts$/, "");
-    output += `export { default as "${name}" } from "../${module}/${name}";\n`;
+    const name = file.replace(".ts", "");
+    output += `export { default as "${name}" } from "../${folder}/${file}";\n`;
   }
-}
+});
 
-fs.writeFileSync(HANDLER_PATH, output.trim() + "\n", "utf8");
-console.log("✅ handlers/index.ts generated.");
+fs.writeFileSync(path.join(handlerDir, "index.ts"), output);
+console.log("✅ handlers/index.ts đã được tạo!");
