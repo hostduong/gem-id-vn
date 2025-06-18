@@ -5,7 +5,7 @@ main = "src/api/index.ts"
 compatibility_date = "2024-06-01"
 
 # ⛔️ Dòng dưới đây sẽ được update tự động bởi update-route.js (không cần commit lại)
-routes = [ "https://gem.id.vn/api/nv4amkqxd17bg5ufmtglpx12gpn54y" ]
+routes = [ "https://gem.id.vn/api/7ckx5r3az9jngjo117fmh42qc6s7dl" ]
 
 kv_namespaces = [
   { binding = "KHOAI_KV_USER",     id = "77a8867cc9374bbaa9846d78875efbf0" },
