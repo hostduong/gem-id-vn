@@ -4,7 +4,12 @@ const fs = require("fs");
 const path = require("path");
 
 // 📁 Các thư mục có thể chứa file handler
-const folders = ["auth", "email", "admin", "coin", "utils"];
+const srcPath = path.join(__dirname, "src");
+const folders = fs.readdirSync(srcPath).filter(name => {
+  const fullPath = path.join(srcPath, name);
+  return fs.statSync(fullPath).isDirectory() && name !== "api" && name !== "handlers";
+});
+
 const handlersDir = path.join(__dirname, "src", "handlers");
 
 // 🔧 Đảm bảo thư mục tồn tại
