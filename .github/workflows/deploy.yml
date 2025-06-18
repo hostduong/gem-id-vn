@@ -2,16 +2,29 @@ name: Deploy Cloudflare Worker
 
 on:
   schedule:
-    - cron: '*/20 * * * *'
-  workflow_dispatch:
+    - cron: '*/20 * * * *'     # Tự động chạy mỗi 20 phút
+  workflow_dispatch:           # Cho phép chạy thủ công
   push:
-    branches: [ "main" ]
+    branches: [ "main" ]       # Tự động deploy khi có commit lên main
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Generate handlers/index.ts
+        run: node generate-handlers-index.js
 
       - name: Update & deploy dynamic route
         run: node update-route.js
