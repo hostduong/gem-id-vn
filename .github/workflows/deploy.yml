@@ -7,6 +7,9 @@ on:
   push:
     branches: [ "main" ]
 
+permissions:
+  contents: write  # 👈 Cho phép workflow push file
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -18,31 +21,23 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 20
+          node-version: 20 
 
-      - name: Ensure folders exist
+      - name: Ensure src folders exist
         run: mkdir -p src/{auth,email,admin,coin,handlers}
 
       - name: Generate handlers/index.ts
         run: node generate-handlers-index.js
-
-      - name: Debug check file
-        run: |
-          echo "📁 Danh sách handlers:"
-          ls -l src/handlers
-          echo "📄 Nội dung index.ts:"
-          cat src/handlers/index.ts || echo "⚠️ Không tìm thấy index.ts"
-
-      - name: Update & deploy route
-        run: node update-route.js
-        env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
 
       - name: Commit updated handlers/index.ts
         run: |
           git config --global user.name "AutoBot"
           git config --global user.email "bot@gem.id.vn"
           git add src/handlers/index.ts
-          git commit -m "🔁 Auto-update handlers/index.ts" || echo "⚠️ No changes to commit"
+          git commit -m "🔁 Auto-update handlers/index.ts" || echo "⚠️ No changes"
           git push
-    
+
+      - name: Update & deploy dynamic route
+        run: node update-route.js
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
