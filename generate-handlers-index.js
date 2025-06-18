@@ -4,7 +4,7 @@ const fs = require("fs");
 const path = require("path");
 
 // 📁 Các thư mục có thể chứa file handler
-const folders = ["auth", "email", "admin", "coin"];
+const folders = ["auth", "email", "admin", "coin", "utils"];
 const handlersDir = path.join(__dirname, "src", "handlers");
 
 // 🔧 Đảm bảo thư mục tồn tại
