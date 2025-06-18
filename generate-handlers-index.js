@@ -24,3 +24,12 @@ for (const folder of folders) {
 const filePath = path.join(handlerPath, "index.ts");
 fs.writeFileSync(filePath, output);
 console.log("✅ handlers/index.ts đã được tạo:", filePath);
+
+try {
+  execSync("git add src/handlers/index.ts");
+  execSync('git commit -m "🔁 Auto update handlers/index.ts"');
+  execSync("git push");
+} catch (err) {
+  console.warn("⚠️ Không thể commit tự động:", err.message);
+}
+
