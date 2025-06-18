@@ -4,7 +4,7 @@ workers_dev = false
 main = "src/api/index.ts"
 compatibility_date = "2024-06-01"
 
-routes = [ "https://gem.id.vn/api/zb3s1ks5groh0yh4u4qo9lz9clynty" ]
+routes = [ "https://gem.id.vn/api/oep1yn5g8gcrslajulweh9837tm1jo" ]
 
 [build]
 command = ""
