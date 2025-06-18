@@ -1,35 +1,29 @@
-// ✅ generate-handlers-index.js – Tự động sinh handlers/index.ts
+// ✅ generate-handlers-index.js – Auto-generate src/handlers/index.ts
+
 const fs = require("fs");
 const path = require("path");
 
+// 📁 Các thư mục có thể chứa file handler
 const folders = ["auth", "email", "admin", "coin"];
 const handlersDir = path.join(__dirname, "src", "handlers");
 
-// ✅ Tạo thư mục nếu chưa có
+// 🔧 Đảm bảo thư mục tồn tại
 fs.mkdirSync(handlersDir, { recursive: true });
 
-let output = `// ✅ Auto-generated file\n`;
+let output = `// ✅ Auto-generated handlers/index.ts\n`;
 
 for (const folder of folders) {
-  const folderDir = path.join(__dirname, "src", folder);
-  if (!fs.existsSync(folderDir)) continue;
+  const dir = path.join(__dirname, "src", folder);
+  if (!fs.existsSync(dir)) continue;
 
-  const files = fs.readdirSync(folderDir).filter(f => f.endsWith(".ts"));
+  const files = fs.readdirSync(dir).filter(f => f.endsWith(".ts"));
   for (const file of files) {
     const name = file.replace(".ts", "");
     output += `export { default as "${name}" } from "../${folder}/${file}";\n`;
   }
 }
 
-const indexPath = path.join(handlersDir, "index.ts");
-fs.writeFileSync(indexPath, output, "utf8");
-console.log("✅ handlers/index.ts đã được ghi:", indexPath);
-
-// ✅ Nếu cần commit lại:
-try {
-  execSync("git add src/handlers/index.ts");
-  execSync('git commit -m "🔁 Update handlers/index.ts"');
-  execSync("git push");
-} catch (err) {
-  console.warn("⚠️ Không commit vì không có thay đổi mới");
-}
+// 📄 Ghi vào handlers/index.ts (ghi đè luôn nếu có)
+const indexFilePath = path.join(handlersDir, "index.ts");
+fs.writeFileSync(indexFilePath, output, "utf8");
+console.log("✅ Đã tạo hoặc ghi đè src/handlers/index.ts");
