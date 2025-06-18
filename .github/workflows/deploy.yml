@@ -2,10 +2,10 @@ name: Deploy Cloudflare Worker
 
 on:
   schedule:
-    - cron: '*/20 * * * *'     # Tự động chạy mỗi 20 phút
-  workflow_dispatch:           # Cho phép chạy thủ công
+    - cron: '*/20 * * * *'
+  workflow_dispatch:
   push:
-    branches: [ "main" ]       # Tự động deploy khi có commit lên main
+    branches: [ "main" ]
 
 jobs:
   deploy:
@@ -18,13 +18,18 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 20 
-          
+          node-version: 20
+
       - name: Ensure src folders exist
         run: mkdir -p src/{auth,email,admin,coin,handlers}
 
       - name: Generate handlers/index.ts
         run: node generate-handlers-index.js
+
+      - name: Debug check handlers/index.ts
+        run: |
+          echo "🧩 Content of handlers/index.ts:"
+          cat src/handlers/index.ts || echo "❌ File not found"
 
       - name: Update & deploy dynamic route
         run: node update-route.js
