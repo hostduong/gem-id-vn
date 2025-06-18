@@ -5,7 +5,7 @@ export { default as "list-users" } from "../admin/list-users.ts";
 export { default as "lock-user" } from "../admin/lock-user.ts";
 export { default as "logger-all" } from "../admin/logger-all.ts";
 export { default as "logger" } from "../admin/logger.ts";
-export { default as "update-user" } from "../admin /update-user.ts";
+export { default as "update-user" } from "../admin/update-user.ts";
 export { default as "user-email" } from "../admin /user-email.ts";
 export { default as "login" } from "../auth/login.ts";
 export { default as "profile" } from "../auth/profile.ts";
