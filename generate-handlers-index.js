@@ -3,7 +3,7 @@ const path = require("path");
 
 const folders = ["auth", "email", "admin", "coin"];
 const handlerPath = path.join(__dirname, "src", "handlers");
-fs.mkdirSync(handlerPath, { recursive: true }); // Tạo folder nếu chưa có
+fs.mkdirSync(handlerPath, { recursive: true });
 
 let output = `// ✅ Auto-generated handlers/index.ts\n`;
 
@@ -20,6 +20,10 @@ for (const folder of folders) {
 
 const filePath = path.join(handlerPath, "index.ts");
 
-// ✅ Ghi đè nếu tồn tại
+// ✅ Xoá trước khi ghi để tránh bị cache
+try {
+  fs.unlinkSync(filePath);
+} catch (e) {}
+
 fs.writeFileSync(filePath, output, { encoding: "utf8", flag: "w" });
-console.log("✅ handlers/index.ts đã được tạo hoặc ghi đè:", filePath);
+console.log("✅ handlers/index.ts đã được tạo:", filePath);
