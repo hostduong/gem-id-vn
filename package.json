@@ -1,8 +1,0 @@
-{
-  "name": "khoai-workers",
-  "version": "1.0.0",
-  "type": "module",
-  "scripts": {
-    "deploy": "node update-route.js"
-  }
-}
