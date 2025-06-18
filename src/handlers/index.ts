@@ -1,7 +1,7 @@
 // ✅ Auto-generated handlers/index.ts
 export { default as "create-api-key" } from "../admin/create-api-key.ts";
 export { default as "disable-api-key" } from "../admin/disable-api-key.ts";
-export { default as "list-users" } from "../admin /list-users.ts";
+export { default as "list-users" } from "../admin/list-users.ts";
 export { default as "lock-user" } from "../admin /lock-user.ts";
 export { default as "logger-all" } from "../admin /logger-all.ts";
 export { default as "logger" } from "../admin /logger.ts";
