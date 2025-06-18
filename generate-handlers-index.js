@@ -1,30 +1,22 @@
 const fs = require("fs");
 const path = require("path");
 
-const srcDir = path.join(__dirname, "src");
-const ignoreFolders = ["utils", "api"];
-const output = [];
+const dirs = ["auth", "email", "admin", "coin"];
+let output = "";
 
-function walk(dir) {
-  const files = fs.readdirSync(dir);
+for (const dir of dirs) {
+  const files = fs.readdirSync(`src/${dir}`);
   for (const file of files) {
-    const fullPath = path.join(dir, file);
-    const stat = fs.statSync(fullPath);
-    if (stat.isDirectory()) {
-      const folderName = path.basename(fullPath);
-      if (!ignoreFolders.includes(folderName)) {
-        walk(fullPath);
-      }
-    } else if (file.endsWith(".ts") && !file.endsWith(".d.ts")) {
-      const relativePath = path.relative(path.join(__dirname, "src/handlers"), fullPath).replace(/\\/g, "/").replace(/\.ts$/, "");
-      const typeName = relativePath.split("/").pop();
-      output.push(`export { default as "${typeName}" } from "../${relativePath}";`);
+    if (file.endsWith(".ts")) {
+      const name = file.replace(".ts", "");
+      output += `export { default as "${name}" } from "../${dir}/${file}";\n`;
     }
   }
 }
 
-walk(srcDir);
+// 👉 Đảm bảo thư mục handlers tồn tại
+fs.mkdirSync("src/handlers", { recursive: true });
 
-const finalContent = output.join("\n") + "\n";
-fs.writeFileSync(path.join(srcDir, "handlers", "index.ts"), finalContent);
-console.log("✅ Đã tạo lại handlers/index.ts với " + output.length + " API handler.");
+// ✅ Ghi vào index.ts bên trong handlers
+fs.writeFileSync("src/handlers/index.ts", output);
+console.log("✅ Đã cập nhật src/handlers/index.ts");
