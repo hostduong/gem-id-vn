@@ -20,5 +20,5 @@ export { default as "update-token" } from "../email/update-token.ts";
 export { default as "cookie" } from "../utils/cookie.ts";
 export { default as "hash" } from "../utils/hash.ts";
 export { default as "ip" } from "../utils/ip.ts";
+export { default as "kv" } from "../utils/kv.ts";
 export { default as "logger" } from "../utils/logger.ts";
-export { default as "kv" } from "../utils /kv.ts";
