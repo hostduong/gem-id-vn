@@ -1,14 +1,9 @@
 name: Deploy Cloudflare Worker
 
 on:
-  schedule:
-    - cron: '*/20 * * * *'
-  workflow_dispatch:
   push:
     branches: [ "main" ]
-
-permissions:
-  contents: write  # 👈 Cho phép workflow push file
+  workflow_dispatch:
 
 jobs:
   deploy:
@@ -21,10 +16,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 20 
-
-      - name: Ensure src folders exist
-        run: mkdir -p src/{auth,email,admin,coin,handlers}
+          node-version: 20
 
       - name: Generate handlers/index.ts
         run: node generate-handlers-index.js
@@ -37,7 +29,7 @@ jobs:
           git commit -m "🔁 Auto-update handlers/index.ts" || echo "⚠️ No changes"
           git push
 
-      - name: Update & deploy dynamic route
-        run: node update-route.js
+      - name: Deploy with Wrangler
+        run: npx wrangler deploy --config=wrangler.toml
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
