@@ -12,7 +12,7 @@ let output = `// ✅ Auto-generated handlers/index.ts\n`;
 // ✅ Tự động lấy tất cả thư mục trong src/, bỏ qua api và handlers
 const folders = fs.readdirSync(srcPath).filter(name => {
   const fullPath = path.join(srcPath, name);
-  return fs.statSync(fullPath).isDirectory() && !["api", "handlers", "css", "js"].includes(name);
+  return fs.statSync(fullPath).isDirectory() && !["api", "handlers", "css", "js", "img"].includes(name);
 });
 
 for (const folder of folders) {
