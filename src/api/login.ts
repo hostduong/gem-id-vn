@@ -1,6 +1,6 @@
-{% set title = "Đăng nhập | UnlimitMail - Hệ thống Email Tự Động" %}
-{% set description = "UnlimitMail cung cấp hệ thống đăng nhập email tự động, bảo mật cao, hỗ trợ tốt cho các ứng dụng MMO và doanh nghiệp." %}
-{% set keywords = "unlimitmail, đăng nhập email, hệ thống email tự động, mail cho MMO" %}
+{% set title = "Đăng nhập | Gem.id.vn - Hệ thống Email Tự Động" %}
+{% set description = "Gem.id.vn cung cấp hệ thống đăng nhập email tự động, bảo mật cao, hỗ trợ tốt cho các ứng dụng MMO và doanh nghiệp." %}
+{% set keywords = "Gem.id.vn, đăng nhập email, hệ thống email tự động, mail cho MMO" %}
 {% set canonical = "https://gem.id.vn/login" %}
 
 {% include "head.njk" %}
