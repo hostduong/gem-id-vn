@@ -1,40 +1,44 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"/>
+  <meta name="csrf-token" content="{{ csrf_token or '' }}"/>
 
   <title>{{ title }}</title>
   <meta name="description" content="{{ description }}">
   <meta name="keywords" content="{{ keywords }}">
   <meta name="robots" content="index, follow">
-  <meta name="author" content="Gem.id.vn">
-  <meta name="canonical" content="{{ canonical }}"/>
+  <meta name="author" content="UnlimitMail.com">
+  <meta name="canonical" content="{{ canonical }}">
 
-  <!-- Open Graph Meta Tags (Social Media Sharing) -->
+  <!-- Open Graph -->
   <meta property="og:title" content="{{ title }}">
   <meta property="og:description" content="{{ description }}">
-  <meta property="og:image" content="https://gem.id.vn/assets/og-icon.jpg">
+  <meta property="og:image" content="{{ og_image }}">
   <meta property="og:url" content="{{ canonical }}">
   <meta property="og:type" content="website">
 
-  <!-- Twitter Card Meta Tags -->
+  <!-- Twitter -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="{{ title }}">
   <meta name="twitter:description" content="{{ description }}">
-  <meta name="twitter:image" content="https://gem.id.vn/assets/og-icon.jpg">
+  <meta name="twitter:image" content="{{ og_image }}">
 
   <!-- Favicon -->
-  <link rel="icon" href="https://gem.id.vn/assets/favicon.ico" type="image/x-icon">
+  <link rel="icon" type="image/png" href="/assets/img/favicon/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/img/favicon/apple-touch-icon.png">
 
-  <!-- Fonts -->
+  <!-- Fonts & Icons -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-  <!-- Styles -->
-  <link rel="stylesheet" href="/assets/css/core.css" />
-  <link rel="stylesheet" href="/assets/css/theme.css" />
-  <link rel="stylesheet" href="/assets/css/front-page.css" />
-  <link rel="stylesheet" href="/assets/css/app.css" />
-  <link rel="stylesheet" href="/assets/css/sweetalert2.css" />
-  <link rel="stylesheet" href="/assets/css/toastr.css" />
+  <!-- CSS Build (copy về hoặc host tự tạo) -->
+  <link rel="stylesheet" href="/assets/css/core2.css">
+  <link rel="stylesheet" href="/assets/css/theme-default2.css">
+  <link rel="stylesheet" href="/assets/css/app.css">
+  <link rel="stylesheet" href="/assets/css/sweetalert2.css">
+  <link rel="stylesheet" href="/assets/css/toastr.css">
+
+  <!-- Optional page-level styles -->
+  {% block head_extra %}{% endblock %}
 </head>
