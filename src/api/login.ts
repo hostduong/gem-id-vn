@@ -1,79 +1,52 @@
-{% set title = "Đăng nhập | Gem.id.vn - Hệ thống Email Tự Động" %}
-{% set description = "Gem.id.vn cung cấp hệ thống đăng nhập email tự động, bảo mật cao, hỗ trợ tốt cho các ứng dụng MMO và doanh nghiệp." %}
-{% set keywords = "Gem.id.vn, đăng nhập email, hệ thống email tự động, mail cho MMO" %}
-{% set canonical = "https://gem.id.vn/login" %}
+import { sha256, randomBase62 } from "../../utils/hash";
 
-{% include "head.njk" %}
+export async function onRequestPost(context) {
+  const { request, env } = context;
+  const body = await request.json();
+  const { uid = "", pass = "", token = "", user_agent = "", ip = "" } = body;
 
-<body class="bg-light min-h-screen flex items-center justify-center py-10">
-  <div class="w-full max-w-md bg-white rounded-lg shadow-md px-6 py-8">
-    <div class="flex flex-col items-center mb-6">
-      <img src="/assets/logo.svg" class="h-10 mb-2" alt="GEM.ID Logo">
-      <h1 class="text-xl font-semibold text-gray-800">Đăng nhập tài khoản</h1>
-    </div>
+  // ✅ 1. Kiểm tra token SHA-256 tạm
+  const now = new Date();
+  const expected = await sha256("abc123" + now.getUTCHours());
+  if (token !== expected) {
+    return new Response(JSON.stringify({ message: "Sai token tạm thời" }), { status: 403 });
+  }
 
-    <form id="form-login" class="space-y-5" onsubmit="return checkForm();">
-      <div>
-        <label for="uid" class="block text-sm font-medium text-gray-700">Email hoặc Tên đăng nhập</label>
-        <input id="uid" name="uid" type="text" autocomplete="username" required
-               class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 focus:outline-none focus:ring-blue-500 focus:border-blue-500">
-      </div>
+  // ✅ 2. Tìm user qua email hoặc username
+  const emailKey = `KHOAI/\\/profile/\\/email:${uid}`;
+  const emailMap = await env.KHOAI_KV_USER.get(emailKey, "json");
 
-      <div>
-        <label for="pass" class="block text-sm font-medium text-gray-700">Mật khẩu</label>
-        <div class="relative">
-          <input id="pass" name="pass" type="password" autocomplete="current-password" required
-                 class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 pr-10 focus:outline-none focus:ring-blue-500 focus:border-blue-500">
-          <button type="button" id="toggle-pass" class="absolute inset-y-0 right-0 flex items-center px-3 text-sm text-gray-500">Hiện</button>
-        </div>
-      </div>
+  const username = emailMap?.user || uid;
+  const userKey = `KHOAI/\\/profile/\\/user:${username}`;
+  const user = await env.KHOAI_KV_USER.get(userKey, "json");
 
-      <input type="hidden" name="token" id="token" value="">
+  if (!user || user.status === "lock")
+    return new Response(JSON.stringify({ message: "Tài khoản không tồn tại hoặc bị khóa" }), { status: 403 });
 
-      <div class="flex items-center justify-between">
-        <label class="flex items-center">
-          <input id="remember" name="remember" type="checkbox"
-                 class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
-          <span class="ml-2 text-sm text-gray-700">Ghi nhớ đăng nhập</span>
-        </label>
-        <a href="/forgot-password" class="text-sm text-blue-600 hover:underline">Quên mật khẩu?</a>
-      </div>
+  const hashed = await sha256(pass + user.salt);
+  if (hashed !== user.pass)
+    return new Response(JSON.stringify({ message: "Sai mật khẩu" }), { status: 401 });
 
-      <button type="submit"
-              class="w-full py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-        Đăng nhập
-      </button>
-    </form>
+  // ✅ 3. Tạo cookie mới
+  const cookie = randomBase62(60);
+  const salt = randomBase62(15);
+  const hashedBrowser = await sha256(user_agent + salt);
+  const time = Math.floor(Date.now() / 1000);
 
-    <p class="mt-6 text-center text-sm text-gray-600">
-      Chưa có tài khoản? <a href="/register" class="text-blue-600 hover:underline">Đăng ký ngay</a>
-    </p>
-  </div>
+  await env.KHOAI_KV_COOKIE.put(
+    `KHOAI/\\/cookie/\\/user:${username}:${cookie}`,
+    JSON.stringify({ salt, browser: hashedBrowser, time }),
+    { expirationTtl: 60 * 60 * 24 * 7 }
+  );
 
-  <script>
-    document.getElementById("toggle-pass").addEventListener("click", () => {
-      const input = document.getElementById("pass");
-      input.type = input.type === "password" ? "text" : "password";
-    });
-
-    async function sha256(msg) {
-      const data = new TextEncoder().encode(msg);
-      const hashBuffer = await crypto.subtle.digest("SHA-256", data);
-      return Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, "0")).join("");
+  // ✅ 4. Trả cookie HTTPOnly
+  return new Response(
+    JSON.stringify({ success: true, user: username }),
+    {
+      headers: {
+        "Content-Type": "application/json",
+        "Set-Cookie": `session=${cookie}; Path=/; Max-Age=604800; HttpOnly; SameSite=Lax`
+      }
     }
-
-    async function generateTempToken() {
-      const hour = new Date().getUTCHours();
-      return await sha256("abc123" + hour);
-    }
-
-    async function checkForm() {
-      const token = await generateTempToken();
-      if (!token) return false;
-      document.querySelector("input[name=token]").value = token;
-      return true;
-    }
-  </script>
-</body>
-
-{% include "footer.njk" %}
+  );
+}
