@@ -9,6 +9,7 @@ export { default as "update-user" } from "../admin/update-user.ts";
 export { default as "user-email" } from "../admin/user-email.ts";
 export { default as "login" } from "../auth/login.ts";
 export { default as "profile" } from "../auth/profile.ts";
+export { default as "update-ip" } from "../auth/update-ip.ts";
 export { default as "add" } from "../coin/add.ts";
 export { default as "deduct" } from "../coin/deduct.ts";
 export { default as "history" } from "../coin/history.ts";
