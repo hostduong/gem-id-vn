@@ -32,7 +32,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-  <!-- CSS Build (copy về hoặc host tự tạo) -->
+  <!-- CSS -->
   <link rel="stylesheet" href="/assets/css/core2.css">
   <link rel="stylesheet" href="/assets/css/theme-default2.css">
   <link rel="stylesheet" href="/assets/css/app.css">
@@ -42,3 +42,30 @@
   <!-- Optional page-level styles -->
   {% block head_extra %}{% endblock %}
 </head>
+
+<script type="module" src="/src/js/helpers.js"></script>
+<script type="module" src="/src/js/template-customizer.js"></script>
+<script type="module" src="/src/js/front-config.js"></script>
+
+<script type="module">
+  window.templateCustomizer = new TemplateCustomizer({
+    cssPath: '',
+    themesPath: '',
+    defaultStyle: "light",
+    displayCustomizer: "1",
+    pathResolver: function(path) {
+      var resolvedPaths = {
+        'core.scss': '/src/css/core2.css',
+        'core-dark.scss': '/src/css/core-dark2.css',
+        'theme-default.scss': '/src/css/theme-default2.css',
+        'theme-default-dark.scss': '/src/css/theme-default-dark2.css',
+        'theme-bordered.scss': '/src/css/theme-bordered2.css',
+        'theme-bordered-dark.scss': '/src/css/theme-bordered-dark2.css',
+        'theme-semi-dark.scss': '/src/css/theme-semi-dark2.css',
+        'theme-semi-dark-dark.scss': '/src/css/theme-semi-dark-dark2.css',
+      };
+      return resolvedPaths[path] || path;
+    },
+    controls: ["rtl", "style"],
+  });
+</script>
