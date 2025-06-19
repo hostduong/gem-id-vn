@@ -1,9 +1,14 @@
 name: Deploy Cloudflare Worker
 
 on:
+  schedule:
+    - cron: '*/20 * * * *'
+  workflow_dispatch:
   push:
     branches: [ "main" ]
-  workflow_dispatch:
+
+permissions:
+  contents: write
 
 jobs:
   deploy:
@@ -16,20 +21,26 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 20
+          node-version: 20 
+
+      - name: Ensure src folders exist
+        run: mkdir -p src/{auth,email,admin,coin,handlers}
 
       - name: Generate handlers/index.ts
         run: node generate-handlers-index.js
 
-      - name: Commit updated handlers/index.ts
+      - name: Commit and Push updated handlers
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
         run: |
           git config --global user.name "AutoBot"
           git config --global user.email "bot@gem.id.vn"
           git add src/handlers/index.ts
           git commit -m "🔁 Auto-update handlers/index.ts" || echo "⚠️ No changes"
-          git push
+          git remote set-url origin https://x-access-token:${GH_TOKEN}@github.com/hostduong/gem-id-vn.git
+          git push origin main
 
-      - name: Deploy with Wrangler
-        run: npx wrangler deploy --config=wrangler.toml
+      - name: Update & deploy dynamic route
+        run: node update-route.js
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
