@@ -5,7 +5,7 @@ export async function sha256(str) {
   return Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, "0")).join("");
 }
 
-export function randomBase62(length = 20) {
+export function randomBase62(length = 60) {
   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
   let result = '';
   for (let i = 0; i < length; i++) {
