@@ -5,7 +5,7 @@ main = "src/api/index.ts"
 compatibility_date = "2024-06-01"
 
 # ✅ Sử dụng route gốc, không cần route ngẫu nhiên
-routes = [ "https://gem.id.vn/api/5kx542lldyuhycw8hrbkg7evmqoj0z" ]
+routes = [ "https://gem.id.vn/api/ak9pyi33q0wsnzji56l4f58s8onssc" ]
 
 [build]
 command = ""
