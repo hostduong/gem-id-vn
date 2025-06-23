@@ -6,27 +6,27 @@ compatibility_date = "2024-06-27"
 [[kv_namespaces]]
 binding = "KHOAI_KV_USER"
 id = "77a8867cc9374bbaa9846d78875efbf0"
-preview_id = "bbef1813ec9b7d5f8fa24e49120f64ee"
+preview_id = "77a8867cc9374bbaa9846d78875efbf0"
 
 [[kv_namespaces]]
 binding = "KHOAI_KV_TOKEN"
 id = "f6f5eef5735443e685d45c500f06df83"
-preview_id = "bbef1813ec9b7d5f8fa24e49120f64ee"
+preview_id = "f6f5eef5735443e685d45c500f06df83"
 
 [[kv_namespaces]]
 binding = "KHOAI_KV_OUTLOOK"
 id = "60ad76d205ff435c8101bd3e31428a01"
-preview_id = "bbef1813ec9b7d5f8fa24e49120f64ee"
+preview_id = "60ad76d205ff435c8101bd3e31428a01"
 
 [[kv_namespaces]]
 binding = "KHOAI_KV_GMAIL"
 id = "08b95e1748744c80b9f797d3c0d4fe4b"
-preview_id = "xxxxxx_GMAIL_NS_PREVIEW_ID"
+preview_id = "08b95e1748744c80b9f797d3c0d4fe4b"
 
 [[kv_namespaces]]
 binding = "KHOAI_KV_COIN"
 id = "44498515d40948d7b12072b677cf5cb7"
-preview_id = "bbef1813ec9b7d5f8fa24e49120f64ee"
+preview_id = "44498515d40948d7b12072b677cf5cb7"
 
 [[kv_namespaces]]
 binding = "KHOAI_KV_LOGGER_COIN"
@@ -36,7 +36,7 @@ preview_id = "bbef1813ec9b7d5f8fa24e49120f64ee"
 [[kv_namespaces]]
 binding = "KHOAI_KV_SETTING"
 id = "36725c9be54a41a6b06773c90586a8d1"
-preview_id = "bbef1813ec9b7d5f8fa24e49120f64ee"
+preview_id = "36725c9be54a41a6b06773c90586a8d1"
 
 # Thêm các KV khác nếu cần...
 
