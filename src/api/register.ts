@@ -1,8 +1,23 @@
-import { sha256, randomBase62 } from "../lib/hash";
-import { getNextUserId } from "../lib/idgen";
+function randomBase62(length = 20) {
+  const chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  let result = '';
+  for (let i = 0; i < length; ++i) result += chars[Math.floor(Math.random() * chars.length)];
+  return result;
+}
 
-export async function onRequestPost(context) {
-  const { request, env } = context;
+async function sha256(str: string) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+  return Array.from(new Uint8Array(buf)).map(x => x.toString(16).padStart(2, '0')).join('');
+}
+
+async function getNextUserId(env) {
+  const countKey = "KHOAI__user__counter";
+  let id = parseInt((await env.KHOAI_KV_USER.get(countKey)) || "100000", 10) + 1;
+  await env.KHOAI_KV_USER.put(countKey, id.toString());
+  return id.toString();
+}
+
+export default async function register(request: Request, env: any, ctx: ExecutionContext) {
   const body = await request.json();
   const { fullname, email, password, phone, pin } = body;
 
@@ -21,9 +36,9 @@ export async function onRequestPost(context) {
   if (emailMap?.user) return new Response(JSON.stringify({ ok: false, message: "Email đã tồn tại." }), { status: 409 });
 
   // Sinh id tự tăng
-  const id = await getNextUserId(env); // Trả về chuỗi số 6 ký tự (vd: "100001")
+  const id = await getNextUserId(env);
 
-  // Tạo username (vd: email trước @ hoặc id)
+  // Tạo username
   const username = `u${id}`;
 
   // Sinh salt & token
@@ -63,7 +78,6 @@ export async function onRequestPost(context) {
     token_tiktok: "",
     token_facebook: "",
     token_zalo: ""
-    // ...các trường mở rộng khác
   };
 
   // Ghi vào KV
