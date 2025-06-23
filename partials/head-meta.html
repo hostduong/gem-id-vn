@@ -1,0 +1,42 @@
+<!-- head-meta.html -->
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"/>
+  <title>{{ title }}</title>
+  <meta name="description" content="{{ description }}">
+  <meta name="keywords" content="{{ keywords }}">
+  <meta name="robots" content="index, follow">
+  <meta name="author" content="UnlimitMail.com">
+  <link rel="canonical" href="{{ canonical }}">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="{{ title }}">
+  <meta property="og:description" content="{{ description }}">
+  <meta property="og:image" content="{{ og_image }}">
+  <meta property="og:url" content="{{ canonical }}">
+  <meta property="og:type" content="website">
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="{{ title }}">
+  <meta name="twitter:description" content="{{ description }}">
+  <meta name="twitter:image" content="{{ og_image }}">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="/src/img/favicon/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/src/img/favicon/apple-touch-icon.png">
+
+  <!-- Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="/src/css/core2.css">
+  <link rel="stylesheet" href="/src/css/theme-default2.css">
+  <link rel="stylesheet" href="/src/css/app.css">
+  <link rel="stylesheet" href="/src/css/sweetalert2.css">
+  <link rel="stylesheet" href="/src/css/toastr.css">
+
+  {% block head_extra %}{% endblock %}
+</head>
