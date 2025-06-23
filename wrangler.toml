@@ -1,5 +1,5 @@
 name = "gem-id-vn"
-main = "dist/worker.js"          # Nếu dùng vite/rollup build ra dist/
+main = "src/worker.ts"        
 compatibility_date = "2024-06-27"
 
 # KV Bindings
