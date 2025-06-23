@@ -18,6 +18,9 @@ jobs:
       - name: Build project
         run: npm run build
 
+      - name: Install dependencies
+        run: npm instal
+
       - name: Publish to Cloudflare Workers
         uses: cloudflare/wrangler-action@v3
         with:
