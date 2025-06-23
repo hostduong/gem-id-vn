@@ -15,17 +15,13 @@ jobs:
         with:
           node-version: 20
 
+      - name: Install dependencies
+        run: npm install         # <-- PHẢI ĐÚNG CHÍNH TẢ
+
       - name: Build project
         run: npm run build
-
-      - name: Install dependencies
-        run: npm instal
 
       - name: Publish to Cloudflare Workers
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          # Nếu project là monorepo hoặc path khác, thêm:
-          # wranglerVersion: '3'
-          # workingDirectory: ./
-
