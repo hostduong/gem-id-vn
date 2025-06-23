@@ -1,0 +1,25 @@
+{
+  "name": "gem-id-vn",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "gem.id.vn Cloudflare Workers API + UI",
+  "main": "dist/worker.js",
+  "scripts": {
+    "dev": "wrangler dev",
+    "start": "wrangler dev",
+    "build": "esbuild src/worker.ts --bundle --platform=neutral --target=es2022 --outfile=dist/worker.js",
+    "format": "prettier --write \"src/**/*.ts\"",
+    "typecheck": "tsc --noEmit"
+  },
+  "author": "Your Name",
+  "license": "MIT",
+  "dependencies": {
+    // (Thường Cloudflare Workers không cần nhiều dependencies, nhưng nếu dùng có thể thêm ở đây)
+  },
+  "devDependencies": {
+    "esbuild": "^0.21.0",
+    "typescript": "^5.4.5",
+    "prettier": "^3.2.5",
+    "wrangler": "^3.52.1"
+  }
+}
