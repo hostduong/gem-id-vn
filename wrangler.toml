@@ -1,26 +1,58 @@
 name = "gem-id-vn"
-account_id = "bbef1813ec9b7d5f8fa24e49120f64ee"
-workers_dev = false
-main = "src/api/index.ts"
-compatibility_date = "2024-06-01"
+main = "dist/worker.js"          # Nếu dùng vite/rollup build ra dist/
+compatibility_date = "2024-06-27"
 
-# ✅ Sử dụng route gốc, không cần route ngẫu nhiên
-routes = [ "https://gem.id.vn/*" ]
+# KV Bindings
+[[kv_namespaces]]
+binding = "KHOAI_KV_USER"
+id = "77a8867cc9374bbaa9846d78875efbf0"
+preview_id = "bbef1813ec9b7d5f8fa24e49120f64ee"
+
+[[kv_namespaces]]
+binding = "KHOAI_KV_TOKEN"
+id = "f6f5eef5735443e685d45c500f06df83"
+preview_id = "bbef1813ec9b7d5f8fa24e49120f64ee"
+
+[[kv_namespaces]]
+binding = "KHOAI_KV_OUTLOOK"
+id = "60ad76d205ff435c8101bd3e31428a01"
+preview_id = "bbef1813ec9b7d5f8fa24e49120f64ee"
+
+[[kv_namespaces]]
+binding = "KHOAI_KV_GMAIL"
+id = "08b95e1748744c80b9f797d3c0d4fe4b"
+preview_id = "xxxxxx_GMAIL_NS_PREVIEW_ID"
+
+[[kv_namespaces]]
+binding = "KHOAI_KV_COIN"
+id = "44498515d40948d7b12072b677cf5cb7"
+preview_id = "bbef1813ec9b7d5f8fa24e49120f64ee"
+
+[[kv_namespaces]]
+binding = "KHOAI_KV_LOGGER_COIN"
+id = "852f904fc9384926be284eefacf15cd2"
+preview_id = "bbef1813ec9b7d5f8fa24e49120f64ee"
+
+[[kv_namespaces]]
+binding = "KHOAI_KV_SETTING"
+id = "36725c9be54a41a6b06773c90586a8d1"
+preview_id = "bbef1813ec9b7d5f8fa24e49120f64ee"
+
+# Thêm các KV khác nếu cần...
+
+# Static Site (nếu có UI static kèm Worker, ví dụ /public)
+[site]
+bucket = "./public"
+
+# Route production (ví dụ subdomain hoặc domain chính)
+# routes = [
+#   { pattern = "gem.id.vn/*", zone_id = "xxxx" }
+# ]
 
 [build]
-command = ""
-upload.format = "modules"
-upload.main = "src/api/index.ts"
+command = "npm run build"
+watch_dir = "src"
 
-kv_namespaces = [
-  { binding = "KHOAI_KV_USER",     id = "77a8867cc9374bbaa9846d78875efbf0" },
-  { binding = "KHOAI_KV_COOKIE",   id = "9e0fee27605645ae9b60157f6e75e4e7" },
-  { binding = "KHOAI_KV_API_KEY",  id = "be4985203f4445b1b9b9b92fcae18a16" },
-  { binding = "KHOAI_KV_ROUTE",    id = "8923fac56d1b42528f76d13ba473fe68" },
-  { binding = "KHOAI_KV_LOGGER",   id = "056e31b4339648ecae8ccc88e4cbfa6a" },
-  { binding = "KHOAI_KV_OUTLOOK",  id = "60ad76d205ff435c8101bd3e31428a01" },
-  { binding = "KHOAI_KV_GMAIL",    id = "08b95e1748744c80b9f797d3c0d4fe4b" }
-]
-
-[vars]
-ENVIRONMENT = "production"
+# Environment (tùy chỉnh môi trường nếu cần)
+[env.production]
+# environment-specific settings
