@@ -2,7 +2,7 @@
   "name": "gem-id-vn",
   "version": "1.0.0",
   "type": "module",
-  "description": "gem.id.vn Cloudflare Workers API + UI",
+  "description": "UnlimitMail.com Cloudflare Workers API + UI",
   "main": "dist/worker.js",
   "scripts": {
     "dev": "wrangler dev",
@@ -13,9 +13,6 @@
   },
   "author": "Your Name",
   "license": "MIT",
-  "dependencies": {
-    // (Thường Cloudflare Workers không cần nhiều dependencies, nhưng nếu dùng có thể thêm ở đây)
-  },
   "devDependencies": {
     "esbuild": "^0.21.0",
     "typescript": "^5.4.5",
