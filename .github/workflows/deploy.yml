@@ -1,38 +1,31 @@
-name: Deploy Cloudflare Worker
+name: Deploy to Cloudflare Workers
 
 on:
-  schedule:
-    - cron: '*/20 * * * *'
-  workflow_dispatch:
   push:
-    branches: [ "main" ]
-
-permissions:
-  contents: write
+    branches: [main]
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout source
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
         with:
-          node-version: 20 
+          node-version: 20
 
-      - name: Ensure src folders exist
-        run: mkdir -p src/{auth,email,admin,coin,handlers}
+      - name: Install dependencies
+        run: npm install
 
-      - name: Commit and Push updated handlers
-        env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
-        run: |
-          git config --global user.name "AutoBot"
-          git config --global user.email "bot@gem.id.vn"
-          git add src/handlers/index.ts
-          git commit -m "🔁 Auto-update handlers/index.ts" || echo "⚠️ No changes"
-          git remote set-url origin https://x-access-token:${GH_TOKEN}@github.com/hostduong/gem-id-vn.git
-          git push origin main
+      - name: Build project
+        run: npm run build
+
+      - name: Publish to Cloudflare Workers
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          # Nếu project là monorepo hoặc path khác, thêm:
+          # wranglerVersion: '3'
+          # workingDirectory: ./
+
