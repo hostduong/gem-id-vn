@@ -1,25 +1,42 @@
-import register from './api/register';
-// import các file API khác ở đây nếu có
+// Demo API: /api/register
+export async function handleRegister(request: Request): Promise<Response> {
+  if (request.method !== "POST") {
+    return new Response("Method Not Allowed", { status: 405 });
+  }
+  // Demo: Trả về JSON mẫu (bạn thay bằng logic thật khi cần)
+  return new Response(JSON.stringify({ ok: true, message: "Đăng ký thành công (demo)!" }), {
+    headers: { "Content-Type": "application/json" }
+  });
+}
 
-// Static asset handler
-import { getAssetFromKV } from '@cloudflare/kv-asset-handler';
+// Serve static file từ /public
+async function serveStatic(request: Request): Promise<Response> {
+  const url = new URL(request.url);
+  let path = url.pathname;
+  if (path === "/") path = "/index.html";
+  // Đảm bảo path hợp lệ
+  try {
+    // Tìm file trong bucket (public/)
+    // @ts-ignore
+    const file = await PUBLIC.fetch(path);
+    if (file && file.status === 200) return file;
+    // Nếu không có, trả về 404
+    return new Response("Not found", { status: 404 });
+  } catch {
+    return new Response("Not found", { status: 404 });
+  }
+}
 
 export default {
   async fetch(request: Request, env: any, ctx: ExecutionContext) {
     const url = new URL(request.url);
 
-    // 1. Route API
-    if (url.pathname === "/api/register" && request.method === "POST") {
-      return await register(request, env, ctx);
+    // Nếu là API
+    if (url.pathname === "/api/register") {
+      return await handleRegister(request);
     }
-    // Thêm các API khác ở đây (login, profile...)
 
-    // 2. Tất cả các đường dẫn khác (UI tĩnh)
-    try {
-      return await getAssetFromKV({ request, waitUntil: ctx.waitUntil });
-    } catch (e) {
-      // Trả về 404 nếu không tìm thấy file tĩnh
-      return new Response("404 Not Found", { status: 404 });
-    }
+    // Nếu là static UI
+    return await serveStatic(request);
   }
 };
