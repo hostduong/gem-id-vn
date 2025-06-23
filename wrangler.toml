@@ -1,5 +1,5 @@
 name = "gem-id-vn"
-main = "src/worker.ts"        
+main = "dist/worker.js"        
 compatibility_date = "2024-06-27"
 
 # KV Bindings
