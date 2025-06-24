@@ -1,8 +1,5 @@
 export default {
   async fetch(request: Request, env: any, ctx: ExecutionContext) {
-    // Route API động, ví dụ:
-    // if (url.pathname === "/api/register" && request.method === "POST") return ...;
-    // Còn lại:
-    return fetch(request);
+    return new Response('<h1>Worker test OK</h1>', { headers: { 'content-type': 'text/html' } });
   }
 }
