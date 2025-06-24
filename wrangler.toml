@@ -42,7 +42,7 @@ preview_id = "36725c9be54a41a6b06773c90586a8d1"
 
 # Static Site (nếu có UI static kèm Worker, ví dụ /public)
 [site]
-bucket = "./public"
+bucket = "public"
 
 # Route production (ví dụ subdomain hoặc domain chính)
 # routes = [
